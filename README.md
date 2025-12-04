@@ -1,29 +1,187 @@
-# Full-Stack Boilerplate Project
+# Prime Tech Exam - Full Stack Application
 
-A complete boilerplate project with Docker, Next.js frontend, NestJS backend, and PostgreSQL database.
+## 1. Project Overview
 
-## Features
+A comprehensive full-stack boilerplate project designed for technical examinations and rapid prototyping. This application features a modern microservices architecture with Docker containerization, providing a complete development environment with authentication, task management, and responsive UI components.
+
+The project demonstrates industry best practices including JWT authentication, RESTful API design, database migrations, and container orchestration. It serves as an excellent starting point for building scalable web applications or as a reference implementation for technical assessments.
+
+## 2. Setup and Installation
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/jcapuli/prime-tech-exam.git
+cd prime-tech-exam
+```
+
+### Quick Start with Docker Compose (Recommended)
+
+1. **Set up environment variables:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Start all services:**
+   ```bash
+   docker-compose up
+   ```
+
+3. **Access the applications:**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:3001/api
+   - PostgreSQL Database: localhost:5432
+
+### Manual Development Setup
+
+#### Backend Setup
+```bash
+cd backend
+npm install
+npm run start:dev
+```
+
+#### Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## 3. Tech Stack
 
 ### Frontend
-- **Next.js 14** with App Router
-- **Bootstrap 5** integration with React Bootstrap
-- **JWT Authentication** with cookie-based token storage
-- **Responsive Design** with Tailwind CSS
-- **Sample Pages**: Login, Dashboard, Home
+- **Framework**: Next.js 14 with App Router
+- **Language**: TypeScript
+- **UI Library**: React 18
+- **Styling**: Tailwind CSS + Bootstrap 5
+- **UI Components**: React Bootstrap
+- **HTTP Client**: Axios
+- **Authentication**: JWT with cookie storage
+- **Charts**: Recharts for data visualization
 
 ### Backend
-- **NestJS** framework with TypeScript
-- **PostgreSQL** database with TypeORM
-- **JWT Authentication** with Passport.js
-- **Input Validation** with class-validator
-- **RESTful API** with proper error handling
+- **Framework**: NestJS
+- **Language**: TypeScript
+- **Database**: PostgreSQL with TypeORM
+- **Authentication**: Passport.js with JWT strategy
+- **Validation**: class-validator + class-transformer
+- **Security**: bcryptjs for password hashing
+- **API Documentation**: RESTful endpoints
 
-### DevOps
-- **Docker** containers for all services
-- **Docker Compose** orchestration
-- **Health checks** and auto-restart
-- **Volume persistence** for database
-- **Network isolation** between services
+### DevOps & Infrastructure
+- **Containerization**: Docker
+- **Orchestration**: Docker Compose
+- **Database**: PostgreSQL 15
+- **Environment Management**: dotenv
+- **Code Quality**: ESLint + Prettier
+- **Testing**: Jest (backend)
+
+## 4. API Documentation
+
+### Base URL
+```
+http://localhost:3001/api
+```
+
+### Authentication Endpoints
+
+#### Login
+```http
+POST /auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "password123"
+}
+```
+
+#### Register
+```http
+POST /auth/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "securepassword",
+  "name": "John Doe"
+}
+```
+
+#### Get Profile (Protected)
+```http
+GET /auth/profile
+Authorization: Bearer <jwt_token>
+```
+
+#### Health Check
+```http
+GET /auth/health
+```
+
+### Tasks Endpoints (Protected - Requires JWT)
+
+#### Get All Tasks
+```http
+GET /tasks
+Authorization: Bearer <jwt_token>
+```
+
+#### Get Single Task
+```http
+GET /tasks/:id
+Authorization: Bearer <jwt_token>
+```
+
+#### Create Task
+```http
+POST /tasks
+Authorization: Bearer <jwt_token>
+Content-Type: application/json
+
+{
+  "title": "New Task",
+  "description": "Task description",
+  "status": "pending"
+}
+```
+
+#### Update Task
+```http
+PATCH /tasks/:id
+Authorization: Bearer <jwt_token>
+Content-Type: application/json
+
+{
+  "title": "Updated Task",
+  "status": "completed"
+}
+```
+
+#### Delete Task
+```http
+DELETE /tasks/:id
+Authorization: Bearer <jwt_token>
+```
+
+### Default Credentials
+- **Email**: `admin@example.com`
+- **Password**: `password123`
+
+### Sample API Requests
+
+Using cURL:
+```bash
+# Login
+curl -X POST http://localhost:3001/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@example.com","password":"password123"}'
+
+# Get tasks (with JWT token)
+curl -X GET http://localhost:3001/api/tasks \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
 
 ## Project Structure
 
@@ -36,64 +194,14 @@ A complete boilerplate project with Docker, Next.js frontend, NestJS backend, an
 ├── backend/              # NestJS application
 │   ├── src/
 │   │   ├── auth/         # Authentication module
-│   │   ├── users/        # Users module
-│   │   └── common/       # Shared utilities
+│   │   ├── tasks/        # Tasks CRUD operations
+│   │   ├── users/        # User management
+│   │   └── typeorm/      # Database entities
 │   └── Dockerfile        # Backend container
 ├── docker-compose.yaml   # Service orchestration
 ├── .env.example          # Environment variables template
 └── README.md             # This file
 ```
-
-## Quick Start
-
-### Prerequisites
-- Docker and Docker Compose
-- Node.js 18+ (for local development)
-
-### Using Docker Compose (Recommended)
-
-1. **Clone and setup**
-   ```bash
-   cp .env.example .env
-   ```
-
-2. **Start all services**
-   ```bash
-   docker-compose up
-   ```
-
-3. **Access the applications**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:3001/api
-   - PostgreSQL: localhost:5432
-
-### Manual Development Setup
-
-#### Backend
-```bash
-cd backend
-npm install
-npm run start:dev
-```
-
-#### Frontend
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/login` - User login
-- `POST /api/auth/register` - User registration
-- `GET /api/auth/profile` - Protected user profile
-- `GET /api/auth/health` - Health check
-
-### Default Credentials
-- Email: `admin@example.com`
-- Password: `password123`
 
 ## Database Access
 
@@ -104,7 +212,7 @@ PostgreSQL is accessible from outside the container:
 - **Username**: `admin`
 - **Password**: `admin123`
 
-You can connect using any PostgreSQL client:
+Connect using any PostgreSQL client:
 ```bash
 psql -h localhost -p 5432 -U admin -d boilerplate_db
 ```
@@ -112,7 +220,6 @@ psql -h localhost -p 5432 -U admin -d boilerplate_db
 ## Environment Variables
 
 Copy `.env.example` to `.env` and modify as needed:
-
 ```bash
 cp .env.example .env
 ```
@@ -178,4 +285,3 @@ docker-compose down -v
 ## License
 
 MIT
-# prime-tech-exam
