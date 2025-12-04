@@ -1,0 +1,101 @@
+Task Entity Migration Procedure
+================================
+
+This document outlines the step-by-step procedure for migrating the task.entity.ts to the database.
+
+1. PREPARATION
+   ------------
+   a. Ensure the PostgreSQL database is running:
+      - Check Docker containers: `docker compose ps`
+      - If not running, start services: `docker compose up -d`
+   
+   b. Verify database connection:
+      - Host: localhost (when running from host) or 'postgres' (when in Docker)
+      - Port: 5432
+      - Database: boilerplate_db
+      - Username: admin
+      - Password: admin123
+
+2. MIGRATION SETUP
+   ----------------
+   a. Install dependencies (if not already installed):
+      - Navigate to backend directory: `cd backend`
+      - Run: `npm install`
+   
+   b. Create TypeORM data source configuration (data-source.ts):
+      - File location: `src/data-source.ts`
+      - Contains database connection settings and migration configuration
+   
+   c. Create migrations directory:
+      - Location: `src/migrations/`
+
+3. GENERATING MIGRATIONS
+   ----------------------
+   a. For automatic migration generation (when schema changes):
+      - Run: `npm run typeorm -- migration:generate -d src/data-source.ts src/migrations/MigrationName`
+      - Note: This compares current database schema with entity definitions
+   
+   b. For manual migration creation (recommended for controlled changes):
+      - Create migration file in `src/migrations/` with timestamp prefix
+      - Implement `up()` and `down()` methods
+      - Example migration for tasks table is at: `src/migrations/1764682074400-CreateTaskTable.ts`
+
+4. RUNNING MIGRATIONS
+   -------------------
+   a. Apply migrations to database:
+      - Run: `npm run typeorm -- migration:run -d src/data-source.ts`
+   
+   b. Verify migration execution:
+      - Check migrations table: `SELECT * FROM migrations;`
+      - Verify table creation: `\d tasks` in psql
+
+5. VERIFICATION
+   -------------
+   a. Confirm tasks table structure:
+      - Columns: id, title, description, status, due_date, created_at, updated_at
+      - Primary key constraint on id
+      - Default values for created_at and updated_at
+   
+   b. Test entity functionality:
+      - Ensure Task entity can be used in TypeORM repositories
+      - Verify CRUD operations work correctly
+
+6. ROLLBACK PROCEDURE (if needed)
+   --------------------------------
+   a. Revert last migration:
+      - Run: `npm run typeorm -- migration:revert -d src/data-source.ts`
+   
+   b. Manual rollback:
+      - Execute down() method from specific migration
+      - Or manually drop table: `DROP TABLE tasks;`
+
+7. TROUBLESHOOTING
+   ----------------
+   Common issues and solutions:
+   
+   a. Connection errors:
+      - Ensure database is running and accessible
+      - Check host/port configuration in data-source.ts
+      - Verify credentials in .env file
+   
+   b. Migration failures:
+      - Check for null values when adding NOT NULL constraints
+      - Ensure no data conflicts with new constraints
+      - Review migration SQL for syntax errors
+   
+   c. TypeORM CLI issues:
+      - Ensure dependencies are installed: typeorm, ts-node
+      - Use npm script: `npm run typeorm -- [command]`
+
+8. BEST PRACTICES
+   ---------------
+   a. Always backup database before running migrations
+   b. Test migrations in development/staging before production
+   c. Keep migration files in version control
+   d. Write idempotent migrations when possible
+   e. Include down() method for rollback capability
+
+Migration File Created: 1764682074400-CreateTaskTable.ts
+Migration Status: Successfully executed
+Table Created: tasks
+Timestamp: December 2, 2025

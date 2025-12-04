@@ -1,0 +1,3 @@
+-- Database initialization script for boilerplate project
+-- Note: Table creation is handled by TypeORM migrations
+-- The users table will be created by migration: CreateUserTable1764682074300
